@@ -1,7 +1,49 @@
 ﻿@page "/"
+@inject HttpClient Http
 
-<h1>Hello, world!</h1>
+<div class="grid-center">
+    <img class="center glow @((_isLoading ? "shaking" : ""))" src="/img/chuck-norris.png" />
+</div>
 
-Welcome to your new app.
+<div class="grid-joke">
+    <div class="alert alert-danger" role="alert">
+        @if (_isLoading) {
+            <h1 class="hg-font">...</h1>
+        }
+        else {
+            <h1 class="hg-font">@_joke.value.joke</h1>
+        }
+    </div>
+</div>
+<div class="grid-btn">
+    <button type="button" disabled="@_disabled"
+            class="btn btn-warning btn-lg hg-font" 
+            onclick="@GetJokeAsync">
+        Hey, Chuck?!
+    </button>
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@functions {
+    Result _joke;
+    bool _isLoading = true;
+    string _disabled => _isLoading ? "disabled" : null;
+
+    protected override Task OnInitAsync() => GetJokeAsync();
+
+    private async Task GetJokeAsync() {
+        _isLoading = true;
+        await Task.Delay(350); // Emulate load times...
+        _joke = await Http.GetJsonAsync<Result>("http://api.icndb.com/jokes/random?limitTo=[nerdy]");
+        _isLoading = false;
+    }
+
+    public class Result {
+        public string type { get; set; }
+        public Value value { get; set; }
+    }
+
+    public class Value {
+        public int id { get; set; }
+        public string joke { get; set; }
+    }
+}
