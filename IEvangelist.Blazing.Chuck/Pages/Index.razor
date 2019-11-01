@@ -1,0 +1,62 @@
+﻿@page "/"
+@inject IJokeService Service
+
+@using IEvangelist.Blazing.Chuck.Services
+
+<div class="grid-center">
+    <img id="chuck" class="center glow @((_isLoading ? "shaking" : ""))"
+         alt="Chuck Norris" src="/img/chuck-norris.png" />
+</div>
+
+<div class="grid-joke">
+    <div class="alert alert-danger" role="alert">
+        @if (_isLoading)
+        {
+            <h1 class="hg-font">...</h1>
+        }
+        else
+        {
+            <h1 class="hg-font">@_joke</h1>
+        }
+    </div>
+</div>
+<div class="grid-btn">
+    <button type="button" disabled=@_disabledAttribute
+            class="btn btn-warning btn-lg hg-font fixed-button"
+            @onclick="GetJokeAsync">
+        Kick Chuck?!
+    </button>
+    <div class="thanks">
+        Special thanks to our friends at <a href="http://www.icndb.com/" target="_blank">ICNDB</a> and
+        <a href="http://tobiasahlin.com/spinkit/" target="_blank">SpinKit by Tobias Ahlin</a>!
+    </div>
+    <div class="">
+        <code>
+            <pre style="color: azure !important;">Debug: Shift + Alt + D</pre>
+        </code>
+    </div>
+</div>
+
+@functions {
+    string _joke;
+    bool _isLoading = true;
+
+    string _disabledAttribute => _isLoading ? "disabled" : null;
+
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    protected override Task OnInitializedAsync() => GetJokeAsync();
+
+    async Task GetJokeAsync()
+    {
+        _isLoading = true;
+        _joke = await Service.GetJokeAsync();
+
+        await JSRuntime.InvokeAsync<object>(
+            "speak",
+            _joke);
+
+        _isLoading = false;
+    }
+}

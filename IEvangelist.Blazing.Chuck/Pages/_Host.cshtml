@@ -1,0 +1,30 @@
+﻿@page "/"
+@namespace IEvangelist.Blazing.Chuck.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IEvangelist.Blazing.Chuck</title>
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body>
+    <a id="gitlink" target="_blank"
+       href="https://github.com/IEvangelist/IEvangelist.Blazing.Chuck">
+        <img style="position: absolute; top: 0; right: 0; border: 0;"
+             src="http://aral.github.io/fork-me-on-github-retina-ribbons/right-dusk-blue@2x.png"
+             alt="Fork me on GitHub">
+    </a>
+
+    <app class="grid">
+        @(await Html.RenderComponentAsync<App>(RenderMode.Server))
+    </app>
+
+    <script src="~/js/speak.js" asp-append-version="true"></script>
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>
